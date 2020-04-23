@@ -1,6 +1,6 @@
 {
   "name": "@gaplo917/angular-typed-forms",
-  "version": "0.0.1",
+  "version": "1.0.0-next.0",
   "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "peerDependencies": {
     "@angular/common": "^9.1.3",

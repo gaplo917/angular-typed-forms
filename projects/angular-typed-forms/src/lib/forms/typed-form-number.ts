@@ -1,5 +1,11 @@
 import { TypedFormControl } from './typed-form-control'
 
+/**
+ * This form control guarantee the value will be converted to Number
+ * before setting to the inner model.
+ *
+ * It will convert `undefined`, `null`, empty string to `null` value
+ */
 export class TypedNumberFormControl<T extends number | null> extends TypedFormControl<T> {
   /**
    * Sets and converts the new value to number for the form control
