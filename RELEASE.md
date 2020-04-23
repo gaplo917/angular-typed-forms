@@ -20,6 +20,15 @@ npm publish
 ## Npm login
 
 ```
+npm login
+
+Username: gaplo917
+Password: {npm token}
+```
+
+## Github Package Login
+
+```
 npm login --scope gaplo917 --registry https://npm.pkg.github.com
 
 Username: gaplo917
