@@ -1,7 +1,7 @@
 {
   "name": "@gaplo917/angular-typed-forms",
-  "version": "1.0.0-next.1",
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
+  "version": "1.0.0",
+  "private": false,
   "peerDependencies": {
     "@angular/common": ">=6.0.0",
     "@angular/core": ">=6.0.0",
