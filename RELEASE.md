@@ -13,7 +13,7 @@ ng build angular-typed-forms --prod
 
 # publish
 cd dist/angular-typed-forms
-npm publish
+npm publish --access public
 
 ```
 
