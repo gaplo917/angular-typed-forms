@@ -1,5 +1,5 @@
 {
-  "name": "typed-reactive-forms",
+  "name": "@gaplo917/angular-typed-forms",
   "version": "0.0.1",
   "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "peerDependencies": {

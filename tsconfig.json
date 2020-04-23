@@ -16,9 +16,9 @@
       "dom"
     ],
     "paths": {
-      "typed-reactive-forms": [
-        "dist/typed-reactive-forms/typed-reactive-forms",
-        "dist/typed-reactive-forms"
+      "angular-typed-forms": [
+        "dist/angular-typed-forms/angular-typed-forms",
+        "dist/angular-typed-forms"
       ]
     }
   },

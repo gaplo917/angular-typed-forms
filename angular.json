@@ -3,38 +3,38 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "typed-reactive-forms": {
+    "angular-typed-forms": {
       "projectType": "library",
-      "root": "projects/typed-reactive-forms",
-      "sourceRoot": "projects/typed-reactive-forms/src",
+      "root": "projects/angular-typed-forms",
+      "sourceRoot": "projects/angular-typed-forms/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/typed-reactive-forms/tsconfig.lib.json",
-            "project": "projects/typed-reactive-forms/ng-package.json"
+            "tsConfig": "projects/angular-typed-forms/tsconfig.lib.json",
+            "project": "projects/angular-typed-forms/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/typed-reactive-forms/tsconfig.lib.prod.json"
+              "tsConfig": "projects/angular-typed-forms/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/typed-reactive-forms/src/test.ts",
-            "tsConfig": "projects/typed-reactive-forms/tsconfig.spec.json",
-            "karmaConfig": "projects/typed-reactive-forms/karma.conf.js"
+            "main": "projects/angular-typed-forms/src/test.ts",
+            "tsConfig": "projects/angular-typed-forms/tsconfig.spec.json",
+            "karmaConfig": "projects/angular-typed-forms/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/typed-reactive-forms/tsconfig.lib.json",
-              "projects/typed-reactive-forms/tsconfig.spec.json"
+              "projects/angular-typed-forms/tsconfig.lib.json",
+              "projects/angular-typed-forms/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"

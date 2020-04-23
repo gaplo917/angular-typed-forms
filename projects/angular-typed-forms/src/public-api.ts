@@ -1,5 +1,5 @@
 /*
- * Public API Surface of typed-reactive-forms
+ * Public API Surface of angular-typed-forms
  */
 
 export * from './lib/typed-reactive-forms.module'

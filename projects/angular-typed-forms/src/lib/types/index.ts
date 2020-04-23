@@ -36,3 +36,5 @@ export type InferTypedFormPartial<Type> = Type extends TypedFormControl<infer X>
 export type InferTypedFormGroupPartial<T> = { [key in keyof T]?: InferTypedFormPartial<T[key]> }
 
 export type InferTypedFormArrayPartial<T> = InferTypedFormPartial<T[]>
+
+export type FormStatus = 'VALID' | 'INVALID' | 'DISABLED' | 'PENDING'

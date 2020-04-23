@@ -1,5 +1,6 @@
 import { AbstractControlOptions, AsyncValidatorFn, FormControl, ValidatorFn } from '@angular/forms'
 import { Observable } from 'rxjs'
+import { FormStatus } from '../types'
 
 export class TypedFormControl<T> extends FormControl {
   constructor(
@@ -12,6 +13,7 @@ export class TypedFormControl<T> extends FormControl {
 
   readonly value: T
   readonly valueChanges: Observable<T>
+  readonly statusChanges: Observable<FormStatus>
 
   setValue(
     value: T,
