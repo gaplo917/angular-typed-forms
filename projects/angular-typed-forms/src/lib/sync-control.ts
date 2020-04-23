@@ -17,7 +17,7 @@ export function syncControl(
         if (diff > 0) {
           control.removeAt(control.controls.length - 1)
         } else {
-          control.push(control.controlsConfig.constructArrayItem())
+          control.push(control.controlsConfig.constructArrayItem(control.controls.length + i))
         }
       }
       value.forEach((v, i) => {

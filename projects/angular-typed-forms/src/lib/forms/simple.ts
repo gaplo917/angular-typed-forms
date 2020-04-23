@@ -145,14 +145,14 @@ export class BaseTable<T extends AbstractControl> extends TypedFormArray<T> {
    * Insert a row at the end of the table
    */
   appendRow(): void {
-    super.push(this.tableConfig.constructRow())
+    super.push(this.tableConfig.constructRow(this.size))
   }
 
   /**
    * Insert a row at the beginning of the table
    */
   prependRow(): void {
-    super.insert(0, this.tableConfig.constructRow())
+    super.insert(0, this.tableConfig.constructRow(0))
   }
 
   /**
@@ -170,7 +170,7 @@ export class BaseTable<T extends AbstractControl> extends TypedFormArray<T> {
    * @param index Index in the array to insert the control
    */
   insertRow(index: number): void {
-    super.insert(index, this.tableConfig.constructRow())
+    super.insert(index, this.tableConfig.constructRow(index))
   }
 }
 
