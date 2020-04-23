@@ -14,7 +14,13 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "typed-reactive-forms": [
+        "dist/typed-reactive-forms/typed-reactive-forms",
+        "dist/typed-reactive-forms"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
