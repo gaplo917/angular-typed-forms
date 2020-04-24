@@ -24,7 +24,7 @@ export class TypedFormBuilder {
   }
 
   array<T extends AbstractControl>(
-    controlsConfig: { constructArrayItem: () => T; size: number },
+    controlsConfig: { constructArrayItem: (index?: number) => T; size: number },
     validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
     asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null,
   ): TypedFormArray<T> {
