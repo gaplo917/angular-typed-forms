@@ -1,5 +1,5 @@
 import { AbstractControl } from '@angular/forms'
-import { TypedFormControl, TypedFormGroup, TypedFormArray } from '../forms'
+import { TypedFormArray, TypedFormControl, TypedFormGroup } from '../forms'
 
 export type KeyValueControl<T> = {
   [key in keyof T]: T[key] & AbstractControl

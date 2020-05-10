@@ -1,13 +1,13 @@
 import { AbstractControl, AbstractControlOptions, AsyncValidatorFn, FormArray, ValidatorFn } from '@angular/forms'
 import { Observable } from 'rxjs'
-import { FormStatus, InferTypedForm, InferTypedFormArray, InferTypedFormArrayPartial } from '../types'
+import { FormStatus, InferTypedFormArray, InferTypedFormArrayPartial } from '../types'
 import { syncControl } from '../sync-control'
 
 export type TypedFormArrayConfig<T> = {
   /**
    * An array item construction of child controls. Each child control is given an index where it is registered.
    */
-  constructArrayItem: (index?: number, value?: InferTypedForm<T>) => T
+  constructArrayItem: (index?: number, values?: InferTypedFormArray<T>) => T
 
   /**
    * initial array size where it is registered.
