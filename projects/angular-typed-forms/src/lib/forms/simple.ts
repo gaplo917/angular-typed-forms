@@ -1,6 +1,6 @@
 import { AbstractControl, AbstractControlOptions, AsyncValidatorFn, ValidatorFn } from '@angular/forms'
 import { TypedFormArray } from './typed-form-array'
-import { KeyValueControl } from '../types'
+import { InferTypedForm, KeyValueControl } from '../types'
 import { TypedFormGroup } from './typed-form-group'
 import { TypedFormControl } from './typed-form-control'
 
@@ -46,7 +46,7 @@ export type SimpleListConfig<T> = {
   /**
    * An array item construction of child controls. Each child control is given an index where it is registered.
    */
-  constructListItem: (index?: number) => TypedFormControl<T>
+  constructListItem: (index?: number, value?: T) => TypedFormControl<T>
 
   /**
    * initial list size where it is registered.
@@ -78,7 +78,7 @@ export class SimpleList<T> extends TypedFormArray<TypedFormControl<T>> {
   ) {
     super(
       {
-        constructArrayItem: (index: number) => listConfig.constructListItem(index),
+        constructArrayItem: (index: number, value: T) => listConfig.constructListItem(index, value),
         size: listConfig.size,
       },
       validatorOrOpts,
@@ -91,7 +91,7 @@ export type BaseTableConfig<T> = {
   /**
    * An array item construction of child controls. Each child control is given an index where it is registered.
    */
-  constructRow: (index?: number) => T
+  constructRow: (index?: number, value?: InferTypedForm<T>) => T
 
   /**
    * initial row size where it is registered.
@@ -110,7 +110,7 @@ export class BaseTable<T extends AbstractControl> extends TypedFormArray<T> {
   ) {
     super(
       {
-        constructArrayItem: (index: number) => tableConfig.constructRow(index),
+        constructArrayItem: (index: number, value: InferTypedForm<T>) => tableConfig.constructRow(index, value),
         size: tableConfig.size,
       },
       validatorOrOpts,
