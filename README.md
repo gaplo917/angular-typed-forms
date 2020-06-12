@@ -12,12 +12,19 @@ yarn add @gaplo917/angular-typed-forms
 
 ## Features
 
+This library uses a `ControlType` instead of `ValueType` as the `FormGroup` and `FormArray` type constraints and
+uses `infer` ([relatively new Typescript 2.8 feature](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html)) to extract the `ValueType` from the `ControlType`.
+
+Thus, this implementation cannot be created earlier than Angular v6.1.
+
 | Features                                                                                                                                                                                                                                                                                                                                                                                                                        | Status |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----: |
 | Strict Type Check                                                                                                                                                                                                                                                                                                                                                                                                               |   ✅   |
 | No Performance Degrade                                                                                                                                                                                                                                                                                                                                                                                                          |   ✅   |
+| **Zero** Force Type Cast Guarantee on .ts/.html                                                                                                                                                                                                                                                                                                                                                                                 |   ✅   |
 | Advance implementation to handle Complex Form Architecture([fullSync](https://github.com/gaplo917/angular-typed-forms/blob/6f80a5527cf75d1b40692f4e3359accc91568566/projects/angular-typed-forms/src/lib/forms/typed-form-group.ts#L85) & [partialSync](https://github.com/gaplo917/angular-typed-forms/blob/6f80a5527cf75d1b40692f4e3359accc91568566/projects/angular-typed-forms/src/lib/forms/typed-form-group.ts#L118) API) |   ✅   |
 | 100% Compatible to [Reactive Forms](https://angular.io/guide/reactive-forms)                                                                                                                                                                                                                                                                                                                                                    |   ✅   |
+| Enjoy slowly/partial migrate without learning a new library                                                                                                                                                                                                                                                                                                                                                                     |   ✅   |
 
 ## Live Demo
 
