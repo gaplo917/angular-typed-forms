@@ -46,16 +46,16 @@ fb.number<number | null>(null)
 ### TypedFormGroup
 
 ```ts
-import { TypedFormGroup, TypedFormControl } from '@gaplo917/angular-typed-forms'
+import { TypedFormGroup, TypedFormControl, TypedFormBuilder } from '@gaplo917/angular-typed-forms'
 
 interface Foo {
   first: TypedFormControl<string | null>
   last: TypedFormControl<string | null>
 }
-
+const fb = new TypedFormBuilder()
 const form = new TypedFormGroup<Foo>({
-  first: new TypedFormControl<string | null>(null),
-  last: new TypedFormControl<string | null>(null),
+  first: fb.control(null),
+  last: fb.control(null),
 })
 
 console.log(form.value) // {first: null, last: null}
@@ -67,10 +67,11 @@ console.log(form.value) // {first: 'Nancy', last: 'Drew'}
 ### TypedFormArray
 
 ```ts
-import { TypedFormArray, TypedFormControl } from '@gaplo917/angular-typed-forms'
+import { TypedFormArray, TypedFormControl, TypedFormBuilder } from '@gaplo917/angular-typed-forms'
 
-const arr = new TypedFormArray<TypedFormControl<string | null>>({
-  constructArrayItem: () => new TypedFormControl<string | null>(null),
+const fb = new TypedFormBuilder()
+const arr = fb.array<TypedFormControl<string | null>>({
+  constructArrayItem: () => fb.control<string | null>(null),
   size: 2,
 })
 console.log(arr.value) // [null, null]
@@ -85,7 +86,8 @@ console.log(arr.value) // ['Nancy', 'Drew']
 import {
   TypedFormArray,
   TypedFormGroup,
-  TypedFormControl
+  TypedFormControl,
+  TypedFormBuilder
 } from "@gaplo917/angular-typed-forms"
 
 interface Foo {
@@ -93,10 +95,12 @@ interface Foo {
   last: TypedFormControl<string | null>
 }
 
-const arr = new TypedFormArray<TypedFormGroup<Foo>>({
-  constructArrayItem: () => new TypedFormGroup<Foo>({
-  first: new TypedFormControl<string | null>(null),
-  last: new TypedFormControl<string | null>(null)
+const fb = new TypedFormBuilder()
+
+const arr = fb.array<TypedFormGroup<Foo>>({
+  constructArrayItem: () => fb.group<Foo>({
+  first: fb.control(null),
+  last: fb.control(null)
 }),
   size: 2
 });
@@ -104,21 +108,6 @@ console.log(arr.value);   // [{ first: null, last: null }, { first: null, last: 
 
 arr.setValue([{ first: 'Nancy', last: 'A' }, { first: 'Drew, last: 'B' }]);
 console.log(arr.value);   // [{ first: 'Nancy', last: 'A' }, { first: 'Drew, last: 'B' }]
-```
-
-### TypedFormBuilder
-
-Same usage with the original angular Reactive form design
-
-```ts
-interface Foo {
-  first: TypedFormControl<string | null>
-  last: TypedFormControl<string | null>
-}
-fb.group<Foo>({
-  first: fb.control(null),
-  last: fb.control(null),
-})
 ```
 
 ## Extra `fullSunc` & `partialSync` API
