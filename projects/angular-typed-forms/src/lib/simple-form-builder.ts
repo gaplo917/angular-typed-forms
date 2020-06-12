@@ -2,11 +2,15 @@ import { AbstractControl, AbstractControlOptions, AsyncValidatorFn, ValidatorFn 
 import { Injectable } from '@angular/core'
 import { KeyValueControl } from './types'
 import {
+  BaseTableConfig,
+  Column,
   SimpleForm,
   SimpleFormArray,
-  TypedFormArray,
+  SimpleFormArrayConfig,
+  SimpleList,
+  SimpleListConfig,
+  SimpleTable,
   TypedFormControl,
-  TypedFormGroup,
   TypedNumberFormControl,
 } from './forms'
 
@@ -23,11 +27,27 @@ export class SimpleFormBuilder {
   }
 
   formArray<T extends AbstractControl>(
-    controlsConfig: { constructArrayItem: (index?: number) => T; size: number },
+    controlsConfig: SimpleFormArrayConfig<T>,
     validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
     asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null,
   ): SimpleFormArray<T> {
     return new SimpleFormArray<T>(controlsConfig, validatorOrOpts, asyncValidator)
+  }
+
+  list<T>(
+    controlsConfig: SimpleListConfig<T>,
+    validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
+    asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null,
+  ) {
+    return new SimpleList(controlsConfig, validatorOrOpts, asyncValidator)
+  }
+
+  table<T extends KeyValueControl<T>>(
+    controlsConfig: BaseTableConfig<Column<T>>,
+    validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
+    asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null,
+  ) {
+    return new SimpleTable(controlsConfig, validatorOrOpts, asyncValidator)
   }
 
   control<T>(

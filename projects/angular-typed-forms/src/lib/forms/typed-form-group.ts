@@ -11,7 +11,7 @@ import {
 /**
  * Extended the original `FormGroup`
  */
-export class TypedFormGroup<T extends KeyValueControl<T> & object> extends FormGroup {
+export class TypedFormGroup<T extends KeyValueControl<T>> extends FormGroup {
   /**
    * Creates a new `TypedFormGroup` instance.
    *

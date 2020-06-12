@@ -1,9 +1,10 @@
 import { AbstractControl } from '@angular/forms'
 import { TypedFormArray, TypedFormControl, TypedFormGroup } from '../forms'
 
-export type KeyValueControl<T extends object> = {
-  [key in keyof T]: T[key] & AbstractControl
-}
+export type KeyValueControl<T extends object> = object &
+  {
+    [key in keyof T]: T[key] & AbstractControl
+  }
 
 export type InferTypedForm<Type> = Type extends TypedFormControl<infer X>
   ? X
