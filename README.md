@@ -60,7 +60,8 @@ fb.control<string | null>(null)
 
 ### TypedNumberFormControl
 
-This will convert the string input to nubmer before calling `setValue`. Enjoy getting a number type from the UI input.
+This will convert the string input to number before calling `setValue`. Any non-number return will return `null`.
+Enjoy getting a number type from the UI input.
 
 ```ts
 new TypedNumberFormControl<number | null>(null)
@@ -71,7 +72,7 @@ fb.number<number | null>(null)
 ### TypedFormGroup
 
 ```ts
-import { TypedFormGroup, TypedFormControl, TypedFormBuilder } from '@gaplo917/angular-typed-forms'
+import { TypedFormControl, TypedFormBuilder } from '@gaplo917/angular-typed-forms'
 
 interface Foo {
   first: TypedFormControl<string | null>
@@ -92,9 +93,10 @@ console.log(form.value) // {first: 'Nancy', last: 'Drew'}
 ### TypedFormArray
 
 ```ts
-import { TypedFormArray, TypedFormControl, TypedFormBuilder } from '@gaplo917/angular-typed-forms'
+import { TypedFormControl, TypedFormBuilder } from '@gaplo917/angular-typed-forms'
 
 const fb = new TypedFormBuilder()
+
 const arr = fb.array<TypedFormControl<string | null>>({
   constructArrayItem: () => fb.control<string | null>(null),
   size: 2,
@@ -137,7 +139,12 @@ console.log(arr.value);   // [{ first: 'Nancy', last: 'A' }, { first: 'Drew, las
 
 ## Extra `fullSunc` & `partialSync` API
 
-### fullSync
+Fully-typed and synchronize the children form control with the value recursively.
+Before setting the value of the `FormArray`, it tries to add/remove necessary `Control`
+according to the value.
+
+`fullSync` use `setValue` internally
+`partialSync` use `patchValue` internally
 
 ```ts
 import { TypedFormGroup, TypedFormControl, TypedFormBuilder } from '@gaplo917/angular-typed-forms'
@@ -172,7 +179,14 @@ form.partialSync([{ first: 'Nancy', last: 'Drew', unknownKey: 'not suppose here'
 
 ## Advance Usage (Simple Module)
 
-This is an **extra** features on Reactive Form Modules for a common scenario and more friendly api added
+This is an **EXTRA** implementation on Reactive Form Modules for a common scenario.
+Simple module comes with a friendly api for your daily operations.
+
+- SimpleForm<T> (FormGroup)
+- SimpleList<T> (FormArray<TypedFormControl<T>>)
+- SimpleTable<T> (FormArray<FormGroup<T>>)
+
+Highly recommend creating a dedicated `class` to represent a complex form.
 
 ```ts
 import { SimpleTable, TypedFormBuilder, TypedFormControl, TypedNumberFormControl } from '@gaplo917/angular-typed-forms'
