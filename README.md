@@ -16,7 +16,7 @@ yarn add @gaplo917/angular-typed-forms
 | -------------------------------------------------------------------------------------- | :----: |
 | Strict Type Check                                                                      |   ✅   |
 | No Performance Degrade                                                                 |   ✅   |
-| Advance implementation to handle Complex Form Architecture(fullSync & PartialSync API) |   ✅   |
+| Advance implementation to handle Complex Form Architecture([fullSync](https://github.com/gaplo917/angular-typed-forms/blob/6f80a5527cf75d1b40692f4e3359accc91568566/projects/angular-typed-forms/src/lib/forms/typed-form-group.ts#L85) & [partialSync](https://github.com/gaplo917/angular-typed-forms/blob/6f80a5527cf75d1b40692f4e3359accc91568566/projects/angular-typed-forms/src/lib/forms/typed-form-group.ts#L118) API) |   ✅   |
 | 100% Compatible to [Reactive Forms](https://angular.io/guide/reactive-forms)           |   ✅   |
 
 ## Live Demo
