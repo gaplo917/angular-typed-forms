@@ -2,6 +2,9 @@ import { AbstractControlOptions, AsyncValidatorFn, FormControl, ValidatorFn } fr
 import { Observable } from 'rxjs'
 import { FormStatus } from '../types'
 
+/**
+ * Extended the original `FormControl`
+ */
 export class TypedFormControl<T> extends FormControl {
   /**
    * Creates a new `FormControl` instance.

@@ -1,18 +1,33 @@
 import { AbstractControl, AbstractControlOptions, AsyncValidatorFn, ValidatorFn } from '@angular/forms'
 import { Injectable } from '@angular/core'
 import { KeyValueControl } from './types'
-import { TypedFormGroup, TypedFormControl, TypedFormArray, TypedNumberFormControl } from './forms'
+import {
+  SimpleForm,
+  SimpleFormArray,
+  TypedFormArray,
+  TypedFormControl,
+  TypedFormGroup,
+  TypedNumberFormControl,
+} from './forms'
 
 @Injectable({
   providedIn: 'root',
 })
-export class TypedFormBuilder {
-  group<T extends KeyValueControl<T>>(
+export class SimpleFormBuilder {
+  form<T extends KeyValueControl<T>>(
     controls: T,
     validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
     asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null,
-  ): TypedFormGroup<T> {
-    return new TypedFormGroup<T>(controls, validatorOrOpts, asyncValidator)
+  ): SimpleForm<T> {
+    return new SimpleForm<T>(controls, validatorOrOpts, asyncValidator)
+  }
+
+  formArray<T extends AbstractControl>(
+    controlsConfig: { constructArrayItem: (index?: number) => T; size: number },
+    validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
+    asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null,
+  ): SimpleFormArray<T> {
+    return new SimpleFormArray<T>(controlsConfig, validatorOrOpts, asyncValidator)
   }
 
   control<T>(
@@ -21,14 +36,6 @@ export class TypedFormBuilder {
     asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null,
   ): TypedFormControl<T> {
     return new TypedFormControl(formState, validatorOrOpts, asyncValidator)
-  }
-
-  array<T extends AbstractControl>(
-    controls: T[],
-    validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
-    asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null,
-  ): TypedFormArray<T> {
-    return new TypedFormArray<T>(controls, validatorOrOpts, asyncValidator)
   }
 
   number<T extends number | null>(

@@ -1,5 +1,5 @@
 import { AbstractControl } from '@angular/forms'
-import { TypedFormArray, TypedFormGroup } from './forms'
+import { SimpleForm, SimpleFormArray } from './forms'
 
 export function syncControl(
   control: AbstractControl,
@@ -9,7 +9,7 @@ export function syncControl(
     emitEvent?: boolean
   },
 ): void {
-  if (control instanceof TypedFormArray) {
+  if (control instanceof SimpleFormArray) {
     if (Array.isArray(value)) {
       // sync number of controls
       const diff = control.controls.length - value.length
@@ -30,7 +30,7 @@ export function syncControl(
         }, value: ${JSON.stringify(value)}`,
       )
     }
-  } else if (control instanceof TypedFormGroup) {
+  } else if (control instanceof SimpleForm) {
     if (typeof value === 'object') {
       for (const key of Object.keys(value)) {
         if (!control.controls[key]) {

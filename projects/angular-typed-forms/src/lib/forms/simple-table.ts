@@ -1,91 +1,7 @@
 import { AbstractControl, AbstractControlOptions, AsyncValidatorFn, ValidatorFn } from '@angular/forms'
-import { TypedFormArray } from './typed-form-array'
 import { InferTypedFormArray, KeyValueControl } from '../types'
-import { TypedFormGroup } from './typed-form-group'
-import { TypedFormControl } from './typed-form-control'
-
-/**
- * Handy class to extend, equivalent to `TypedFormGroup<T>`
- *
- * @usageNotes
- * ### Create a user form
- * ```ts
- * interface FooFormType {
- *   id: TypedFormControl<string | null>
- *   username: TypedFormControl<string | null>
- *   createdAt: TypedFormControl<Date | null>
- *   firstName?: TypedFormControl<string>
- *   lastName?: TypedFormControl<string>
- *   age?: TypedFormControl<number>
- * }
- *
- * class FooForm extends SimpleForm<FooFormType> {
- *   constructor(private fb: TypedFormBuilder) {
- *     super({
- *       id: fb.control(null),
- *       username: fb.control(null),
- *       createdAt: fb.control(null),
- *       firstName: fb.control(''), // default value
- *       // lastName, age are optional
- *     })
- *   }
- * }
- * ```
- */
-export class SimpleForm<T extends KeyValueControl<T>> extends TypedFormGroup<T> {
-  constructor(
-    initialControls: T,
-    validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
-    asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null,
-  ) {
-    super(initialControls, validatorOrOpts, asyncValidator)
-  }
-}
-
-export type SimpleListConfig<T> = {
-  /**
-   * An array item construction of child controls. Each child control is given an index where it is registered.
-   */
-  constructListItem: (index?: number, values?: T[]) => TypedFormControl<T>
-
-  /**
-   * initial list size where it is registered.
-   */
-  size: number
-}
-/**
- * Handy class to extend for creating homogenous typed list,
- * equivalent to `TypedFormArray<TypedFormControl<T>>`
- *
- * @usageNotes
- * ### Create a username list
- * ```ts
- *
- * class FooForm extends SimpleList<string> {
- *   constructor(private fb: TypedFormBuilder) {
- *     super({
- *       constructListItem: () => fb.control('') // default empty
- *       size: 2
- *     })
- *   }
- * }
- */
-export class SimpleList<T> extends TypedFormArray<TypedFormControl<T>> {
-  constructor(
-    private listConfig: SimpleListConfig<T>,
-    validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
-    asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null,
-  ) {
-    super(
-      {
-        constructArrayItem: (index: number, values: T[]) => listConfig.constructListItem(index, values),
-        size: listConfig.size,
-      },
-      validatorOrOpts,
-      asyncValidator,
-    )
-  }
-}
+import { SimpleFormArray } from './simple-form-array'
+import { SimpleForm } from './simple-form'
 
 export type BaseTableConfig<T> = {
   /**
@@ -102,7 +18,7 @@ export type BaseTableConfig<T> = {
 /**
  * Base implementation of table-like structures
  */
-export class BaseTable<T extends AbstractControl> extends TypedFormArray<T> {
+export class BaseTable<T extends AbstractControl> extends SimpleFormArray<T> {
   constructor(
     private tableConfig: BaseTableConfig<T>,
     validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
@@ -175,7 +91,7 @@ export class BaseTable<T extends AbstractControl> extends TypedFormArray<T> {
 }
 
 // alias for better understanding
-export type Column<T extends KeyValueControl<T>> = TypedFormGroup<T>
+export type Column<T extends KeyValueControl<T>> = SimpleForm<T>
 
 /**
  * Handy class to extend for creating Table-like form model,
@@ -194,7 +110,7 @@ export type Column<T extends KeyValueControl<T>> = TypedFormGroup<T>
  * }
  *
  * class FooTable extends SimpleTable<FooTableType> {
- *   constructor(private fb: TypedFormBuilder) {
+ *   constructor(private fb: SimpleFormBuilder) {
  *     super({
  *       constructRow: () =>
  *         fb.group<FooTableType>({

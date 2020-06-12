@@ -7,11 +7,13 @@ import {
   InferTypedFormPartial,
   KeyValueControl,
 } from '../types'
-import { syncControl } from '../sync-control'
 
-export class TypedFormGroup<T extends KeyValueControl<T>> extends FormGroup {
+/**
+ * Extended the original `FormGroup`
+ */
+export class TypedFormGroup<T extends KeyValueControl<T> & object> extends FormGroup {
   /**
-   * Creates a new `FormGroup` instance.
+   * Creates a new `TypedFormGroup` instance.
    *
    * @param initialControls A collection of child controls. The key for each child is the name
    * under which it is registered.
@@ -53,78 +55,6 @@ export class TypedFormGroup<T extends KeyValueControl<T>> extends FormGroup {
    * The current value of the control.
    */
   readonly value: InferTypedFormGroup<T>
-
-  /**
-   * Fully-typed and synchronize the children form control with the value recursively.
-   * Before setting the value in the `FormGroup`, it tries to create/remove necessary `Control`.
-   * according to the value.
-   *
-   * If you had lots `FormControl` already bind to UI. Be careful to the performance
-   * and tune it will the options.
-   *
-   * If you only want to update a portion of the `FormGroup`
-   * @see `partialSync`
-   *
-   * @throws If you are protected by the type check guard, normally it wouldn't fail.
-   * When strict checks fail, such as setting the value of a control
-   * that doesn't exist or if you exclude a value of a control that does exist.
-   *
-   * @param value The new value for the control that matches the type of the group.
-   * @param options Configuration options that determine how the control propagates changes
-   * and emits events after the value changes.
-   * The configuration options are passed to the {@link AbstractControl#updateValueAndValidity
-   * updateValueAndValidity} method.
-   *
-   * * `onlySelf`: When true, each change only affects this control, and not its parent. Default is
-   * false.
-   * * `emitEvent`: When true or not supplied (the default), both the `statusChanges` and
-   * `valueChanges`
-   * observables emit events with the latest status and value when the control value is updated.
-   * When false, no events are emitted.
-   */
-  fullSync(
-    value: InferTypedFormGroup<T>,
-    options?: {
-      onlySelf?: boolean
-      emitEvent?: boolean
-    },
-  ): void {
-    syncControl(this, value, options)
-    super.setValue(value, options)
-  }
-
-  /**
-   * Partially-typed synchronize the children form control with the value recursively.
-   * Before patching the value in the `FormGroup`, it tries to create/remove necessary `Control`.
-   * according to the value.
-   *
-   * @throws If you are protected by the type check guard, normally it wouldn't fail.
-   * When strict checks fail, such as setting the value of a control
-   * that doesn't exist or if you exclude a value of a control that does exist.
-   *
-   * @param value The new value for the control that matches the type of the group.
-   * @param options Configuration options that determine how the control propagates changes
-   * and emits events after the value changes.
-   * The configuration options are passed to the {@link AbstractControl#updateValueAndValidity
-   * updateValueAndValidity} method.
-   *
-   * * `onlySelf`: When true, each change only affects this control, and not its parent. Default is
-   * false.
-   * * `emitEvent`: When true or not supplied (the default), both the `statusChanges` and
-   * `valueChanges`
-   * observables emit events with the latest status and value when the control value is updated.
-   * When false, no events are emitted.
-   */
-  partialSync(
-    value: InferTypedFormGroupPartial<T>,
-    options?: {
-      onlySelf?: boolean
-      emitEvent?: boolean
-    },
-  ): void {
-    syncControl(this, value, options)
-    super.patchValue(value, options)
-  }
 
   /**
    * Registers a control with the group's list of controls.

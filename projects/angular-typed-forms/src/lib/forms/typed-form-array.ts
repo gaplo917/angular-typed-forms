@@ -1,39 +1,15 @@
 import { AbstractControl, AbstractControlOptions, AsyncValidatorFn, FormArray, ValidatorFn } from '@angular/forms'
 import { Observable } from 'rxjs'
 import { FormStatus, InferTypedFormArray, InferTypedFormArrayPartial } from '../types'
-import { syncControl } from '../sync-control'
 
-export type TypedFormArrayConfig<T> = {
-  /**
-   * An array item construction of child controls. Each child control is given an index where it is registered.
-   */
-  constructArrayItem: (index?: number, values?: InferTypedFormArray<T>) => T
-
-  /**
-   * initial array size where it is registered.
-   */
-  size: number
-}
-
+/**
+ * Extended the original `FormArray`
+ */
 export class TypedFormArray<T extends AbstractControl> extends FormArray {
   /**
-   * Creates a new `FormArray` instance.
+   * Creates a new `TypedFormArray` instance.
    *
-   * @usageNotes
-   * ### Create a TypedFormArray with homogeneous type `string | null`
-   *
-   * ```
-   * const arr = new TypedFormArray<TypedFormControl<string | null>>({
-   *   constructArrayItem: () => new TypedFormControl<string | null>(null),
-   *   size: 2
-   * });
-   * console.log(arr.value);   // [null, null]
-   *
-   * arr.setValue(['Nancy', 'Drew']);
-   * console.log(arr.value);   // ['Nancy', 'Drew']
-   * ```
-   *
-   * @param controlsConfig An initialize configuration
+   * @param controls An initialize configuration
    *
    * @param validatorOrOpts A synchronous validator function, or an array of
    * such functions, or an `AbstractControlOptions` object that contains validation functions
@@ -43,15 +19,11 @@ export class TypedFormArray<T extends AbstractControl> extends FormArray {
    *
    */
   constructor(
-    public controlsConfig: TypedFormArrayConfig<T>,
+    controls: T[],
     validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
     asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null,
   ) {
-    super(
-      new Array(controlsConfig.size).fill(0).map((e, idx) => controlsConfig.constructArrayItem(idx)),
-      validatorOrOpts,
-      asyncValidator,
-    )
+    super(controls, validatorOrOpts, asyncValidator)
   }
 
   /**
@@ -76,78 +48,6 @@ export class TypedFormArray<T extends AbstractControl> extends FormArray {
   readonly statusChanges: Observable<FormStatus>
 
   readonly controls: T[]
-
-  /**
-   * Fully-typed and synchronize the children form control with the value recursively.
-   * Before setting the value of the `FormArray`, it tries to add/remove necessary `Control`
-   * according to the value.
-   *
-   * If you had lots `FormControl` already bind to UI. Be careful to the performance
-   * and tune it will the options.
-   *
-   * If you only want to update a portion of the `FormArray`
-   * @see `partialSync`
-   *
-   * @throws If you are protected by the type check guard, normally it wouldn't fail.
-   * When strict checks fail, such as setting the value of a control
-   * that doesn't exist or if you exclude a value of a control that does exist.
-   *
-   * @param value The new value for the control that matches the type of the group.
-   * @param options Configuration options that determine how the control propagates changes
-   * and emits events after the value changes.
-   * The configuration options are passed to the {@link AbstractControl#updateValueAndValidity
-   * updateValueAndValidity} method.
-   *
-   * * `onlySelf`: When true, each change only affects this control, and not its parent. Default is
-   * false.
-   * * `emitEvent`: When true or not supplied (the default), both the `statusChanges` and
-   * `valueChanges`
-   * observables emit events with the latest status and value when the control value is updated.
-   * When false, no events are emitted.
-   */
-  fullSync(
-    value: InferTypedFormArray<T>,
-    options?: {
-      onlySelf?: boolean
-      emitEvent?: boolean
-    },
-  ): void {
-    syncControl(this, value, options)
-    super.setValue(value, options)
-  }
-
-  /**
-   * Partially-typed synchronize the children form control with the value recursively.
-   * Before patching the value of the `FormArray`, it tries to add/remove necessary `Control`
-   * according to the value.
-   *
-   * @throws If you are protected by the type check guard, normally it wouldn't fail.
-   * When strict checks fail, such as setting the value of a control
-   * that doesn't exist or if you exclude a value of a control that does exist.
-   *
-   * @param value The new value for the control that matches the type of the group.
-   * @param options Configuration options that determine how the control propagates changes
-   * and emits events after the value changes.
-   * The configuration options are passed to the {@link AbstractControl#updateValueAndValidity
-   * updateValueAndValidity} method.
-   *
-   * * `onlySelf`: When true, each change only affects this control, and not its parent. Default is
-   * false.
-   * * `emitEvent`: When true or not supplied (the default), both the `statusChanges` and
-   * `valueChanges`
-   * observables emit events with the latest status and value when the control value is updated.
-   * When false, no events are emitted.
-   */
-  partialSync(
-    value: InferTypedFormArrayPartial<T>,
-    options?: {
-      onlySelf?: boolean
-      emitEvent?: boolean
-    },
-  ): void {
-    syncControl(this, value, options)
-    super.patchValue(value, options)
-  }
 
   /**
    * Get the `T` at the given `index` in the array.
@@ -208,9 +108,9 @@ export class TypedFormArray<T extends AbstractControl> extends FormArray {
    * ### Set the values for the controls in the form array
    *
    * ```
-   * const arr = new TypedFormArray<TypedFormControl<string | null>>({
-   *   constructArrayItem: () => new TypedFormControl<string | null>(null),
-   *   size: 2
+   * const arr = new TypedFormArray<TypedFormControl<string | null>>([
+   *  new TypedFormControl<string | null>(null),
+   *  new TypedFormControl<string | null>(null)
    * });
    * console.log(arr.value);   // [null, null]
    *
@@ -252,9 +152,9 @@ export class TypedFormArray<T extends AbstractControl> extends FormArray {
    * ### Patch the values for controls in a form array
    *
    * ```
-   * const arr = new TypedFormArray<TypedFormControl<string | null>>({
-   *   constructArrayItem: () => new TypedFormControl<string | null>(null),
-   *   size: 2
+   * const arr = new TypedFormArray<TypedFormControl<string | null>>([
+   *  new TypedFormControl<string | null>(null),
+   *  new TypedFormControl<string | null>(null)
    * });
    * console.log(arr.value);   // [null, null]
    *
@@ -297,9 +197,9 @@ export class TypedFormArray<T extends AbstractControl> extends FormArray {
    * ### Reset the values in a form array
    *
    * ```ts
-   * const arr = new TypedFormArray<TypedFormControl<string | null>>({
-   *   constructArrayItem: () => new TypedFormControl<string | null>(null),
-   *   size: 2
+   * const arr = new TypedFormArray<TypedFormControl<string | null>>([
+   *  new TypedFormControl<string | null>(null),
+   *  new TypedFormControl<string | null>(null)
    * });
    * arr.reset(['name', 'last name']);
    *

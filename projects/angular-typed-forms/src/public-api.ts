@@ -4,5 +4,6 @@
 
 export * from './lib/typed-reactive-forms.module'
 export * from './lib/typed-form-builder'
+export * from './lib/simple-form-builder'
 export * from './lib/forms'
 export * from './lib/types'

@@ -25,14 +25,20 @@ yarn add @gaplo917/angular-typed-forms
 
 ## Basic Usage (Standard ReactiveForm API)
 
-### Inject TypedFormBuilder
+### Inject TypedFormBuilder / SimpleFormBuilder
+
+- **TypedFormBuilder** - Added Strong Typing on original Angular Reactive Form Modules, no breaking changes)
+- **SimpleFormBuilder** - Added advance implementation based on TypedForm to handle daily operation with minimal codes)
 
 ```ts
+import { TypedFormGroup, TypedFormControl, TypedFormBuilder, SimpleFormBuilder } from '@gaplo917/angular-typed-forms'
+
 interface Foo {
   first: TypedFormControl<string | null>
   last: TypedFormControl<string | null>
 }
 
+// original Reactive Form modules
 @Component({
   selector: 'app-demo',
   templateUrl: './demo.component.html',
@@ -43,6 +49,23 @@ export class DemoComponent implements OnInit {
 
   constructor(private fb: TypedFormBuilder) {
     this.form = fb.group({
+      first: fb.control(null),
+      last: fb.control(null),
+    })
+  }
+}
+
+// Simple Reactive Form
+@Component({
+  selector: 'app-simple',
+  templateUrl: './simple.component.html',
+  styleUrls: ['./simple.component.css'],
+})
+export class SimpleComponent implements OnInit {
+  form: SimpleForm<Foo>
+
+  constructor(private fb: SimpleFormBuilder) {
+    this.form = fb.form({
       first: fb.control(null),
       last: fb.control(null),
     })
@@ -72,14 +95,14 @@ fb.number<number | null>(null)
 ### TypedFormGroup
 
 ```ts
-import { TypedFormControl, TypedFormBuilder } from '@gaplo917/angular-typed-forms'
+import { TypedFormGroup, TypedFormControl, TypedFormBuilder } from '@gaplo917/angular-typed-forms'
 
 interface Foo {
   first: TypedFormControl<string | null>
   last: TypedFormControl<string | null>
 }
 const fb = new TypedFormBuilder()
-const form = fb.group<Foo>({
+const form: TypedFormGroup<Foo> = fb.group({
   first: fb.control(null),
   last: fb.control(null),
 })
@@ -93,11 +116,11 @@ console.log(form.value) // {first: 'Nancy', last: 'Drew'}
 ### TypedFormArray
 
 ```ts
-import { TypedFormControl, TypedFormBuilder } from '@gaplo917/angular-typed-forms'
+import { TypedFormArray, TypedFormControl, TypedFormBuilder } from '@gaplo917/angular-typed-forms'
 
 const fb = new TypedFormBuilder()
 
-const arr = fb.array<TypedFormControl<string | null>>({
+const arr: TypedFormArray<TypedFormControl<string | null>> = fb.array({
   constructArrayItem: () => fb.control<string | null>(null),
   size: 2,
 })
@@ -110,12 +133,7 @@ console.log(arr.value) // ['Nancy', 'Drew']
 ### TypedFormArray<TypedFormGroup<T>> (Table)
 
 ```ts
-import {
-  TypedFormArray,
-  TypedFormGroup,
-  TypedFormControl,
-  TypedFormBuilder
-} from "@gaplo917/angular-typed-forms"
+import { TypedFormArray, TypedFormGroup, TypedFormControl, TypedFormBuilder } from '@gaplo917/angular-typed-forms'
 
 interface Foo {
   first: TypedFormControl<string | null>
@@ -124,72 +142,44 @@ interface Foo {
 
 const fb = new TypedFormBuilder()
 
-const arr = fb.array<TypedFormGroup<Foo>>({
-  constructArrayItem: () => fb.group<Foo>({
-  first: fb.control(null),
-  last: fb.control(null)
-}),
-  size: 2
-});
-console.log(arr.value);   // [{ first: null, last: null }, { first: null, last: null }]
+const arr: TypedFormArray<TypedFormGroup<Foo>> = fb.array([{
+    fb.group<Foo>({
+      first: fb.control(null),
+      last: fb.control(null),
+    }),
+    fb.group<Foo>({
+      first: fb.control(null),
+      last: fb.control(null),
+    })
+}])
+console.log(arr.value) // [{ first: null, last: null }, { first: null, last: null }]
 
-arr.setValue([{ first: 'Nancy', last: 'A' }, { first: 'Drew, last: 'B' }]);
-console.log(arr.value);   // [{ first: 'Nancy', last: 'A' }, { first: 'Drew, last: 'B' }]
-```
-
-## Extra `fullSunc` & `partialSync` API
-
-Fully-typed and synchronize the children form control with the value recursively.
-Before setting the value of the `FormArray`, it tries to add/remove necessary `Control`
-according to the value.
-
-`fullSync` use `setValue` internally
-`partialSync` use `patchValue` internally
-
-```ts
-import { TypedFormGroup, TypedFormControl, TypedFormBuilder } from '@gaplo917/angular-typed-forms'
-
-interface Bar {
-  something: TypedFormControl<string | null>
-}
-
-interface Foo {
-  first: TypedFormControl<string | null>
-  last: TypedFormControl<string | null>
-  bar: TypedFormGroup<Bar>
-}
-
-const fb = new TypedFormBuilder()
-
-const form = fb.array<Foo>([])
-
-console.log(form.value) // []
-
-// full strict type check
-form.fullSync([{ first: 'Nancy', last: 'Drew', bar: { something: 'happen' } }]) // OK
-form.fullSync([{ first: 'Nancy', last: 'Drew', bar: {} }]) // Not compile, missing `something`
-form.fullSync([{ first: 'Nancy', last: 'Drew', bar: { something: 'happen' }, unknownKey: 'not suppose here' }]) // Not compile, redundant `unknownKey`
-
-console.log(form.value) // {first: 'Nancy', last: 'Drew', bar: { something: 'happen' }}
-
-// partial type check
-form.partialSync([{ first: 'Nancy', last: 'Drew' }]) // OK
-form.partialSync([{ first: 'Nancy', last: 'Drew', unknownKey: 'not suppose here' }]) // Not compile, redundant `unknownKey`
+arr.setValue([
+  { first: 'Nancy', last: 'A' },
+  { first: 'Drew', last: 'B' },
+])
+console.log(arr.value) // [{ first: 'Nancy', last: 'A' }, { first: 'Drew, last: 'B' }]
 ```
 
 ## Advance Usage (Simple Module)
 
-This is an **EXTRA** implementation on Reactive Form Modules for a common scenario.
-Simple module comes with a friendly api for your daily operations.
+This is an **EXTRA** implementation based on Reactive Form Modules for a common scenario.
 
-- SimpleForm<T> (FormGroup)
-- SimpleList<T> (FormArray<TypedFormControl<T>>)
-- SimpleTable<T> (FormArray<FormGroup<T>>)
+- Added `fullSunc` & `partialSync` API that helps to sync remote API data to the form
+- Added Table / List Handy abstraction and handy api for your daily operations.
+
+### Added Types
+
+- SimpleForm<T> (TypedFormGroup)
+- SimpleFormArray<T> (TypedFormArray)
+- SimpleList<T> (SimpleFormArray<TypedFormControl<T>>)
+- SimpleTable<T> (SimpleFormArray<FormGroup<T>>)
+- SimpleFormBuilder
 
 Highly recommend creating a dedicated `class` to represent a complex form.
 
 ```ts
-import { SimpleTable, TypedFormBuilder, TypedFormControl, TypedNumberFormControl } from '@gaplo917/angular-typed-forms'
+import { SimpleTable, SimpleFormBuilder, TypedFormControl, TypedNumberFormControl } from '@gaplo917/angular-typed-forms'
 
 interface AddressType {
   address1: TypedFormControl<string | null>
@@ -201,10 +191,10 @@ interface AddressType {
  * SimpleTable is equivalent to TypedFormArray<TypedFormGroup<AddressType>> but with more pre-defined API
  */
 export class AddressTable extends SimpleTable<AddressType> {
-  constructor(private fb: TypedFormBuilder) {
+  constructor(private fb: SimpleFormBuilder) {
     super({
       constructRow: () =>
-        fb.group({
+        fb.form({
           address1: fb.control(null),
           address2: fb.control(null),
           address3: fb.control(null),
@@ -228,10 +218,10 @@ interface UserTableType {
  * SimpleTable is equivalent to TypedFormArray<TypedFormGroup<UserTableType>> but with more pre-defined API
  */
 export class UserTable extends SimpleTable<UserTableType> {
-  constructor(private fb: TypedFormBuilder) {
+  constructor(private fb: SimpleFormBuilder) {
     super({
       constructRow: (index: number) =>
-        fb.group({
+        fb.form({
           id: fb.control(String('ID-' + index)),
           username: fb.control(null),
           birth: fb.control(null),
@@ -240,6 +230,158 @@ export class UserTable extends SimpleTable<UserTableType> {
         }),
       size: 2,
     })
+  }
+}
+```
+
+### Extra `fullSunc` & `partialSync` API
+
+Fully-typed and synchronize the children form control with the value recursively.
+Before setting the value of the `FormArray`, it tries to add/remove necessary `Control`
+according to the value.
+
+`fullSync` use `setValue` internally
+`partialSync` use `patchValue` internally
+
+```ts
+import { TypedFormGroup, TypedFormControl, SimpleFormBuilder } from '@gaplo917/angular-typed-forms'
+
+interface Bar {
+  something: TypedFormControl<string | null>
+}
+
+interface Foo {
+  first: TypedFormControl<string | null>
+  last: TypedFormControl<string | null>
+  bar: TypedFormGroup<Bar>
+}
+
+const fb = new SimpleFormBuilder()
+
+const form = fb.formArray<Foo>([])
+
+console.log(form.value) // []
+
+// full strict type check
+form.fullSync([{ first: 'Nancy', last: 'Drew', bar: { something: 'happen' } }]) // OK
+form.fullSync([{ first: 'Nancy', last: 'Drew', bar: {} }]) // Not compile, missing `something`
+form.fullSync([{ first: 'Nancy', last: 'Drew', bar: { something: 'happen' }, unknownKey: 'not suppose here' }]) // Not compile, redundant `unknownKey`
+
+console.log(form.value) // {first: 'Nancy', last: 'Drew', bar: { something: 'happen' }}
+
+// partial type check
+form.partialSync([{ first: 'Nancy2', last: 'Drew2' }]) // OK
+form.partialSync([{ first: 'Nancy', last: 'Drew', unknownKey: 'not suppose here' }]) // Not compile, redundant `unknownKey`
+
+console.log(form.value) // {first: 'Nancy2', last: 'Drew2', bar: { something: 'happen' }}, `bar` remain unchanged
+```
+
+### Full Example
+
+```ts
+import { SimpleTable, SimpleFormBuilder, TypedFormControl, TypedNumberFormControl } from '@gaplo917/angular-typed-forms'
+
+interface AddressType {
+  address1: TypedFormControl<string | null>
+  address2: TypedFormControl<string | null>
+  address3: TypedFormControl<string | null>
+}
+
+/**
+ * SimpleTable is equivalent to TypedFormArray<TypedFormGroup<AddressType>> but with more pre-defined API
+ */
+export class AddressTable extends SimpleTable<AddressType> {
+  constructor(private fb: SimpleFormBuilder) {
+    super({
+      constructRow: () =>
+        fb.form({
+          address1: fb.control(null),
+          address2: fb.control(null),
+          address3: fb.control(null),
+        }),
+      size: 1,
+    })
+  }
+}
+
+interface UserTableType {
+  id: TypedFormControl<string | null>
+  username: TypedFormControl<string | null>
+  birth: TypedFormControl<Date | null>
+  isStudent: TypedFormControl<boolean>
+  age?: TypedNumberFormControl<number | null>
+  // nested form
+  addresses: AddressTable
+}
+
+/**
+ * SimpleTable is equivalent to TypedFormArray<TypedFormGroup<UserTableType>> but with more pre-defined API
+ */
+export class UserTable extends SimpleTable<UserTableType> {
+  constructor(private fb: SimpleFormBuilder) {
+    super({
+      constructRow: (index: number) =>
+        fb.form({
+          id: fb.control(String('ID-' + index)),
+          username: fb.control(null),
+          birth: fb.control(null),
+          isStudent: fb.control<boolean>(false),
+          addresses: new AddressTable(fb),
+        }),
+      size: 2,
+    })
+  }
+}
+
+@Component({
+  selector: 'app-demo',
+  templateUrl: './demo.component.html',
+  styleUrls: ['./demo.component.css'],
+})
+export class DemoComponent {
+  userTable: UserTable
+
+  constructor(private fb: SimpleFormBuilder) {
+    this.userTable = new UserTable(fb)
+  }
+
+  fullSync() {
+    // fullSync requires strict type match of the value you input
+    // this method will use the values to sync the controls
+    // internally match the numbers of control before use `FormArray.setValue`
+    this.userTable.fullSync([
+      {
+        id: '42e6f1fe-93bd-4993-ab1b-ebaec9ee8d10',
+        username: 'Gary',
+        birth: new Date('2000-01-01'),
+        isStudent: false,
+        // because `age` is optional in the definition
+        // age: 1,
+        addresses: [
+          {
+            address1: 'HK',
+            address2: 'Earth',
+            address3: '',
+          },
+        ],
+      },
+    ])
+  }
+
+  partialSync() {
+    // partialSync only require Partial<T>, but it will also sync them number of controls
+    // this method will use the values to sync the controls
+    // internally match the numbers of control before use `FormArray.patchValue`
+    this.userTable.partialSync([
+      {
+        id: '42e6f1fe-93bd-4993-ab1b-ebaec9ee8d10',
+        username: 'Gary',
+      },
+    ])
+  }
+
+  reset() {
+    this.userTable.reset()
   }
 }
 ```
