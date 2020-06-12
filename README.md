@@ -12,15 +12,212 @@ yarn add @gaplo917/angular-typed-forms
 
 ## Features
 
-| Features                                                                     | Status |
-| ---------------------------------------------------------------------------- | :----: |
-| Strict Type Check                                                            |   ✅   |
-| No Performance Degrade                                                       |   ✅   |
-| Advance implementation to handle Complex Form Architecture                   |   ✅   |
-| 100% Compatible to [Reactive Forms](https://angular.io/guide/reactive-forms) |   ✅   |
+| Features                                                                               | Status |
+| -------------------------------------------------------------------------------------- | :----: |
+| Strict Type Check                                                                      |   ✅   |
+| No Performance Degrade                                                                 |   ✅   |
+| Advance implementation to handle Complex Form Architecture(fullSync & PartialSync API) |   ✅   |
+| 100% Compatible to [Reactive Forms](https://angular.io/guide/reactive-forms)           |   ✅   |
 
+## Live Demo
+
+[![Edit gaplo917/angular-typed-form-codesandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/gaplo917/angular-typed-form-codesandbox/tree/master/?fontsize=14&hidenavigation=1&theme=dark)
+
+## Basic Usage (Standard ReactiveForm API)
+
+### TypedFormControl
+
+```ts
+new TypedFormControl<string | null>(null)
+// or using from TypedFormBuilder
+fb.control<string | null>(null)
+```
+
+### TypedNumberFormControl
+
+This will convert the string input to nubmer before calling `setValue`. Enjoy getting a number type from the UI input.
+
+```ts
+new TypedNumberFormControl<number | null>(null)
+// or using from  TypedFormBuilder
+fb.number<number | null>(null)
+```
+
+### TypedFormGroup
+
+```ts
+import { TypedFormGroup, TypedFormControl } from '@gaplo917/angular-typed-forms'
+
+interface Foo {
+  first: TypedFormControl<string | null>
+  last: TypedFormControl<string | null>
+}
+
+const form = new TypedFormGroup<Foo>({
+  first: new TypedFormControl<string | null>(null),
+  last: new TypedFormControl<string | null>(null),
+})
+
+console.log(form.value) // {first: null, last: null}
+
+form.setValue({ first: 'Nancy', last: 'Drew' })
+console.log(form.value) // {first: 'Nancy', last: 'Drew'}
+```
+
+### TypedFormArray
+
+```ts
+import { TypedFormArray, TypedFormControl } from '@gaplo917/angular-typed-forms'
+
+const arr = new TypedFormArray<TypedFormControl<string | null>>({
+  constructArrayItem: () => new TypedFormControl<string | null>(null),
+  size: 2,
+})
+console.log(arr.value) // [null, null]
+
+arr.setValue(['Nancy', 'Drew'])
+console.log(arr.value) // ['Nancy', 'Drew']
+```
+
+### TypedFormArray<TypedFormGroup<T>> (Table)
+
+```ts
+import {
+  TypedFormArray,
+  TypedFormGroup,
+  TypedFormControl
+} from "@gaplo917/angular-typed-forms"
+
+interface Foo {
+  first: TypedFormControl<string | null>
+  last: TypedFormControl<string | null>
+}
+
+const arr = new TypedFormArray<TypedFormGroup<Foo>>({
+  constructArrayItem: () => new TypedFormGroup<Foo>({
+  first: new TypedFormControl<string | null>(null),
+  last: new TypedFormControl<string | null>(null)
+}),
+  size: 2
+});
+console.log(arr.value);   // [{ first: null, last: null }, { first: null, last: null }]
+
+arr.setValue([{ first: 'Nancy', last: 'A' }, { first: 'Drew, last: 'B' }]);
+console.log(arr.value);   // [{ first: 'Nancy', last: 'A' }, { first: 'Drew, last: 'B' }]
+```
+
+### TypedFormBuilder
+
+Same usage with the original angular Reactive form design
+
+```ts
+interface Foo {
+  first: TypedFormControl<string | null>
+  last: TypedFormControl<string | null>
+}
+fb.group<Foo>({
+  first: fb.control(null),
+  last: fb.control(null),
+})
+```
+
+## Extra `fullSunc` & `partialSync` API
+
+### fullSync
+
+```ts
+import { TypedFormGroup, TypedFormControl, TypedFormBuilder } from '@gaplo917/angular-typed-forms'
+
+interface Bar {
+  something: TypedFormControl<string | null>
+}
+
+interface Foo {
+  first: TypedFormControl<string | null>
+  last: TypedFormControl<string | null>
+  bar: TypedFormGroup<Bar>
+}
+
+const fb = new TypedFormBuilder()
+
+const form = fb.array<Foo>([])
+
+console.log(form.value) // []
+
+// full strict type check
+form.fullSync([{ first: 'Nancy', last: 'Drew', bar: { something: 'happen' } }]) // OK
+form.fullSync([{ first: 'Nancy', last: 'Drew', bar: {} }]) // Not compile, missing `something`
+form.fullSync([{ first: 'Nancy', last: 'Drew', bar: { something: 'happen' }, unknownKey: 'not suppose here' }]) // Not compile, redundant `unknownKey`
+
+console.log(form.value) // {first: 'Nancy', last: 'Drew', bar: { something: 'happen' }}
+
+// partial type check
+form.partialSync([{ first: 'Nancy', last: 'Drew' }]) // OK
+form.partialSync([{ first: 'Nancy', last: 'Drew', unknownKey: 'not suppose here' }]) // Not compile, redundant `unknownKey`
+```
+
+## Advance Usage (Simple Module)
+
+This is an **extra** features on Reactive Form Modules for a common scenario and more friendly api added
+
+```ts
+import { SimpleTable, TypedFormBuilder, TypedFormControl, TypedNumberFormControl } from '@gaplo917/angular-typed-forms'
+
+interface AddressType {
+  address1: TypedFormControl<string | null>
+  address2: TypedFormControl<string | null>
+  address3: TypedFormControl<string | null>
+}
+
+/**
+ * SimpleTable is equivalent to TypedFormArray<TypedFormGroup<AddressType>> but with more pre-defined API
+ */
+export class AddressTable extends SimpleTable<AddressType> {
+  constructor(private fb: TypedFormBuilder) {
+    super({
+      constructRow: () =>
+        fb.group({
+          address1: fb.control(null),
+          address2: fb.control(null),
+          address3: fb.control(null),
+        }),
+      size: 1,
+    })
+  }
+}
+
+interface UserTableType {
+  id: TypedFormControl<string | null>
+  username: TypedFormControl<string | null>
+  birth: TypedFormControl<Date | null>
+  isStudent: TypedFormControl<boolean>
+  age?: TypedNumberFormControl<number | null>
+  // nested form
+  addresses: AddressTable
+}
+
+/**
+ * SimpleTable is equivalent to TypedFormArray<TypedFormGroup<UserTableType>> but with more pre-defined API
+ */
+export class UserTable extends SimpleTable<UserTableType> {
+  constructor(private fb: TypedFormBuilder) {
+    super({
+      constructRow: (index: number) =>
+        fb.group({
+          id: fb.control(String('ID-' + index)),
+          username: fb.control(null),
+          birth: fb.control(null),
+          isStudent: fb.control<boolean>(false),
+          addresses: new AddressTable(fb),
+        }),
+      size: 2,
+    })
+  }
+}
+```
 
 ## Local Development
+
 You can use [`npm link`](https://docs.npmjs.com/cli/link.html) to develop this library locally without pushing every change npm registry.
 
 1. Build this library first.
@@ -28,7 +225,3 @@ You can use [`npm link`](https://docs.npmjs.com/cli/link.html) to develop this l
 3. Go into your project which depend on this library and run `npm link @gaplo917/angular-typed-forms`
 4. Run `ng build --watch` in the root of this library (optional)
 5. Done
-
-## Examples
-
-TODO
