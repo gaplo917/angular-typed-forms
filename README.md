@@ -25,6 +25,30 @@ yarn add @gaplo917/angular-typed-forms
 
 ## Basic Usage (Standard ReactiveForm API)
 
+### Inject TypedFormBuilder
+```
+interface Foo {
+  first: TypedFormControl<string | null>
+  last: TypedFormControl<string | null>
+}
+
+@Component({
+  selector: 'app-demo',
+  templateUrl: './demo.component.html',
+  styleUrls: ['./demo.component.css'],
+})
+export class DemoComponent implements OnInit {
+  form: TypedFormGroup<Foo>
+
+  constructor(private fb: TypedFormBuilder) {
+    this.form = fb.group({
+      first: fb.control(null),
+      last: fb.control(null)
+    })
+  }
+}
+```
+
 ### TypedFormControl
 
 ```ts
@@ -53,7 +77,7 @@ interface Foo {
   last: TypedFormControl<string | null>
 }
 const fb = new TypedFormBuilder()
-const form = new TypedFormGroup<Foo>({
+const form = fb.group<Foo>({
   first: fb.control(null),
   last: fb.control(null),
 })
