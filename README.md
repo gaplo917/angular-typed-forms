@@ -2,7 +2,7 @@
 
 The missing piece of Angular.
 
-```
+```bash
 npm install @gaplo917/angular-typed-forms
 
 # OR
@@ -12,12 +12,12 @@ yarn add @gaplo917/angular-typed-forms
 
 ## Features
 
-| Features                                                                               | Status |
-| -------------------------------------------------------------------------------------- | :----: |
-| Strict Type Check                                                                      |   ✅   |
-| No Performance Degrade                                                                 |   ✅   |
+| Features                                                                                                                                                                                                                                                                                                                                                                                                                        | Status |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----: |
+| Strict Type Check                                                                                                                                                                                                                                                                                                                                                                                                               |   ✅   |
+| No Performance Degrade                                                                                                                                                                                                                                                                                                                                                                                                          |   ✅   |
 | Advance implementation to handle Complex Form Architecture([fullSync](https://github.com/gaplo917/angular-typed-forms/blob/6f80a5527cf75d1b40692f4e3359accc91568566/projects/angular-typed-forms/src/lib/forms/typed-form-group.ts#L85) & [partialSync](https://github.com/gaplo917/angular-typed-forms/blob/6f80a5527cf75d1b40692f4e3359accc91568566/projects/angular-typed-forms/src/lib/forms/typed-form-group.ts#L118) API) |   ✅   |
-| 100% Compatible to [Reactive Forms](https://angular.io/guide/reactive-forms)           |   ✅   |
+| 100% Compatible to [Reactive Forms](https://angular.io/guide/reactive-forms)                                                                                                                                                                                                                                                                                                                                                    |   ✅   |
 
 ## Live Demo
 
@@ -26,7 +26,8 @@ yarn add @gaplo917/angular-typed-forms
 ## Basic Usage (Standard ReactiveForm API)
 
 ### Inject TypedFormBuilder
-```
+
+```ts
 interface Foo {
   first: TypedFormControl<string | null>
   last: TypedFormControl<string | null>
@@ -43,7 +44,7 @@ export class DemoComponent implements OnInit {
   constructor(private fb: TypedFormBuilder) {
     this.form = fb.group({
       first: fb.control(null),
-      last: fb.control(null)
+      last: fb.control(null),
     })
   }
 }
